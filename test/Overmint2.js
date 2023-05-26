@@ -2,9 +2,9 @@ const {
     time,
     loadFixture,
 } = require("@nomicfoundation/hardhat-network-helpers");
-const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
+const {anyValue} = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
+const {expect} = require("chai");
+const {ethers} = require("hardhat");
 
 const NAME = "Overmint2"
 
@@ -15,18 +15,19 @@ describe(NAME, function () {
         const VictimFactory = await ethers.getContractFactory(NAME);
         const victimContract = await VictimFactory.deploy();
 
-        return { victimContract, attackerWallet };
+        return {victimContract, attackerWallet};
     }
 
     describe("exploit", async function () {
         let victimContract, attackerWallet;
         before(async function () {
-            ({ victimContract, attackerWallet } = await loadFixture(setup));
+            ({victimContract, attackerWallet} = await loadFixture(setup));
         })
 
         it("conduct your attack here", async function () {
             const AttackerFactory = await ethers.getContractFactory("Overmint2Attacker");
-            const attackerContract = await AttackerFactory.connect(attackerWallet).deploy(victimContract.address);
+            const attackerContract = await AttackerFactory.connect(attackerWallet).deploy(victimContract.address, {gasLimit: 30_000_000});
+            await attackerContract.deployed();
         });
 
         after(async function () {

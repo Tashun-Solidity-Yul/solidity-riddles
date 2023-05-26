@@ -13,7 +13,7 @@ describe(NAME, function () {
         const [owner, attackerWallet] = await ethers.getSigners();
 
         const VictimFactory = await ethers.getContractFactory(NAME);
-        const victimContract = await VictimFactory.deploy();
+        const victimContract = await VictimFactory.connect(owner).deploy();
 
         return { victimContract, attackerWallet };
     }
